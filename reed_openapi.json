@@ -10,11 +10,6 @@
       "url": "https://www.reed.co.uk/api/1.0"
     }
   ],
-  "security": [
-    {
-      "basicAuth": []
-    }
-  ],
   "paths": {
     "/search": {
       "get": {
@@ -210,13 +205,6 @@
     }
   },
   "components": {
-    "securitySchemes": {
-      "basicAuth": {
-        "type": "http",
-        "scheme": "basic",
-        "description": "Reed.co.uk API key passed as username with empty password."
-      }
-    },
     "schemas": {
       "JobSearchResult": {
         "type": "object",
