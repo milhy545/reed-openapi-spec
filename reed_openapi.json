@@ -1,0 +1,349 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Reed.co.uk Jobseeker API",
+    "version": "1.0.0",
+    "description": "Direct OpenAPI specification for Reed.co.uk job search and details API."
+  },
+  "servers": [
+    {
+      "url": "https://www.reed.co.uk/api/1.0"
+    }
+  ],
+  "security": [
+    {
+      "basicAuth": []
+    }
+  ],
+  "paths": {
+    "/search": {
+      "get": {
+        "operationId": "search_jobs",
+        "summary": "Search jobs on Reed.co.uk",
+        "description": "Search jobs based on keywords, location, salary range, job type, and pagination.",
+        "parameters": [
+          {
+            "name": "keywords",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Keywords to search in title/description (e.g. 'DevOps', 'Electrician')"
+          },
+          {
+            "name": "locationName",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "City name, county, or UK postcode (e.g. 'Newport', 'NP20')"
+          },
+          {
+            "name": "distanceFromLocation",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10
+            },
+            "description": "Distance from location in miles"
+          },
+          {
+            "name": "permanent",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Filter for permanent positions"
+          },
+          {
+            "name": "contract",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Filter for contract positions"
+          },
+          {
+            "name": "temp",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Filter for temporary positions"
+          },
+          {
+            "name": "partTime",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Filter for part-time positions"
+          },
+          {
+            "name": "fullTime",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Filter for full-time positions"
+          },
+          {
+            "name": "minimumSalary",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Minimum annual or hourly salary in GBP"
+          },
+          {
+            "name": "maximumSalary",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Maximum annual or hourly salary in GBP"
+          },
+          {
+            "name": "postedByRecruiter",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Include jobs posted by recruitment agencies"
+          },
+          {
+            "name": "postedByDirectEmployer",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "boolean"
+            },
+            "description": "Include jobs posted by direct employers"
+          },
+          {
+            "name": "resultsToTake",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 20,
+              "maximum": 100
+            },
+            "description": "Number of results to return (max 100)"
+          },
+          {
+            "name": "resultsToSkip",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0
+            },
+            "description": "Number of results to skip (offset pagination)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/JobSearchResult"
+                      }
+                    },
+                    "totalResults": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/jobs/{jobId}": {
+      "get": {
+        "operationId": "get_job_details",
+        "summary": "Get job details by ID",
+        "description": "Retrieve complete job details including description for a specific Reed job ID.",
+        "parameters": [
+          {
+            "name": "jobId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Reed unique job ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Full job details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/JobDetail"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "basicAuth": {
+        "type": "http",
+        "scheme": "basic",
+        "description": "Reed.co.uk API key passed as username with empty password."
+      }
+    },
+    "schemas": {
+      "JobSearchResult": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "integer"
+          },
+          "employerId": {
+            "type": "integer"
+          },
+          "employerName": {
+            "type": "string"
+          },
+          "employerProfileId": {
+            "type": "integer",
+            "nullable": true
+          },
+          "employerProfileName": {
+            "type": "string",
+            "nullable": true
+          },
+          "jobTitle": {
+            "type": "string"
+          },
+          "locationName": {
+            "type": "string"
+          },
+          "minimumSalary": {
+            "type": "number",
+            "nullable": true
+          },
+          "maximumSalary": {
+            "type": "number",
+            "nullable": true
+          },
+          "currency": {
+            "type": "string",
+            "example": "GBP"
+          },
+          "expirationDate": {
+            "type": "string"
+          },
+          "date": {
+            "type": "string"
+          },
+          "jobDescription": {
+            "type": "string"
+          },
+          "applications": {
+            "type": "integer"
+          },
+          "jobUrl": {
+            "type": "string"
+          }
+        }
+      },
+      "JobDetail": {
+        "type": "object",
+        "properties": {
+          "jobId": {
+            "type": "integer"
+          },
+          "employerId": {
+            "type": "integer"
+          },
+          "employerName": {
+            "type": "string"
+          },
+          "jobTitle": {
+            "type": "string"
+          },
+          "locationName": {
+            "type": "string"
+          },
+          "minimumSalary": {
+            "type": "number",
+            "nullable": true
+          },
+          "maximumSalary": {
+            "type": "number",
+            "nullable": true
+          },
+          "yearlyMinimumSalary": {
+            "type": "number",
+            "nullable": true
+          },
+          "yearlyMaximumSalary": {
+            "type": "number",
+            "nullable": true
+          },
+          "currency": {
+            "type": "string"
+          },
+          "salaryType": {
+            "type": "string"
+          },
+          "salary": {
+            "type": "string",
+            "nullable": true
+          },
+          "datePosted": {
+            "type": "string"
+          },
+          "expirationDate": {
+            "type": "string"
+          },
+          "externalUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "jobUrl": {
+            "type": "string"
+          },
+          "partTime": {
+            "type": "boolean"
+          },
+          "fullTime": {
+            "type": "boolean"
+          },
+          "contractType": {
+            "type": "string"
+          },
+          "jobDescription": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}
